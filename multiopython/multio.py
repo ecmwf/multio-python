@@ -118,7 +118,6 @@ class Multio:
         else:
             raise TypeError(f"Can not handle type {type(metadata)} as metadata")
 
-
     def start_server(self):
         lib.multio_start_server(self.__conf)
 
@@ -131,7 +130,6 @@ class Multio:
         md = self.__check_metadata(metadata, self.__dummy_metadata_flush)
         lib.multio_flush(self._handle, md._handle)
 
-
     def notify(self, metadata):
         """
         Notifies all servers (e.g. step notification)
@@ -141,7 +139,6 @@ class Multio:
         """
         md = self.__check_metadata(metadata, self.__dummy_metadata_notification)
         lib.multio_notify(self._handle, md._handle)
-
 
     def write_domain(self, metadata, data):
         """
@@ -158,9 +155,8 @@ class Multio:
             intArr = ffi.from_buffer("int*", data)
             lib.multio_write_domain(self._handle, md._handle, intArr, sizeInt)
         else:
-            intArr = ffi.new(f'int[{size}]', data)
+            intArr = ffi.new(f"int[{size}]", data)
             lib.multio_write_domain(self._handle, md._handle, intArr, sizeInt)
-
 
     def write_mask(self, metadata, data):
         """
@@ -181,9 +177,8 @@ class Multio:
                 doubleArr = ffi.from_buffer("double*", data)
                 lib.multio_write_mask_double(self._handle, md._handle, doubleArr, sizeInt)
         else:
-            doubleArr = ffi.new(f'double[{size}]', data)
+            doubleArr = ffi.new(f"double[{size}]", data)
             lib.multio_write_mask_double(self._handle, md._handle, doubleArr, sizeInt)
-
 
     def write_field(self, metadata, data):
         """
@@ -204,9 +199,8 @@ class Multio:
                 doubleArr = ffi.from_buffer("double*", data)
                 lib.multio_write_field_double(self._handle, md._handle, doubleArr, sizeInt)
         else:
-            doubleArr = ffi.new(f'double[{size}]', data)
+            doubleArr = ffi.new(f"double[{size}]", data)
             lib.multio_write_field_double(self._handle, md._handle, doubleArr, sizeInt)
-
 
     def field_accepted(self, metadata):
         """
@@ -223,7 +217,6 @@ class Multio:
         lib.multio_field_accepted(self._handle, md._handle, accept)
         return bool(accept[0])
 
-
     def write_grib(self, data):
         if type(data) == bytes:
             size = len(data)
@@ -239,5 +232,5 @@ class Multio:
         else:
             size = len(data)
             sizeInt = ffi.cast("int", size)
-            charArr = ffi.new(f'char*', data)
+            charArr = ffi.new(f"char*", data)
             lib.multio_write_grib_encoded(self._handle, ffi.cast("void*", charArr), sizeInt)

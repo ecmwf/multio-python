@@ -9,48 +9,35 @@ import multiopython
 default_dict = {"allow_world": True, "parent_comm": 1, "client_comm": [2, 3], "server_comm": [4, 5]}
 
 
-NO_OP_PLAN = json.dumps({
-    "plans": [{
-        "name": "No op",
-        "actions": [
-            { "type": "select",
-              "match": [{
-                "category": "custom"
-              }]
-            },
+NO_OP_PLAN = json.dumps(
+    {
+        "plans": [
             {
-              "type": "sink",
-              "sinks": []
+                "name": "No op",
+                "actions": [{"type": "select", "match": [{"category": "custom"}]}, {"type": "sink", "sinks": []}],
             }
         ]
-    }]
-})
+    }
+)
 
 TEST_WRITE_FILE = "testWriteOutput.grib"
 
-WRITE_FILE_PLAN = json.dumps({
-    "plans": [{
-        "name": "No op",
-        "actions": [
-            { "type": "select",
-              "match": [{
-                "category": "custom"
-              }]
-            },
+WRITE_FILE_PLAN = json.dumps(
+    {
+        "plans": [
             {
-                "type": "sink",
-                "sinks": [{
-                    "type": "file",
-                    "append": False,
-                    "per-server": False,
-                    "path": TEST_WRITE_FILE
-                }]
+                "name": "No op",
+                "actions": [
+                    {"type": "select", "match": [{"category": "custom"}]},
+                    {
+                        "type": "sink",
+                        "sinks": [{"type": "file", "append": False, "per-server": False, "path": TEST_WRITE_FILE}],
+                    },
+                ],
             }
         ]
-    }]
-})
-
-
+    }
+)
 
 
 def test_initialisation():
@@ -60,8 +47,10 @@ def test_initialisation():
 def test_multio_version():
     assert multiopython.Multio(**default_dict).__version__() == "2.2.0"
 
+
 def test_initialisation_no_config():
     multiopython.Multio()
+
 
 def test_multio_wrong_config_path():
     incorrect_path = "I_AM_NOT_HERE/multio/config/multio-server.yaml"
@@ -111,7 +100,7 @@ def test_create_wrong_metadata_dict():
 
 
 def test_write_field():
-    os.environ['MULTIO_PLANS'] = WRITE_FILE_PLAN
+    os.environ["MULTIO_PLANS"] = WRITE_FILE_PLAN
     if os.path.isfile(TEST_WRITE_FILE):
         os.remove(TEST_WRITE_FILE)
     metadata = {"category": "path", "new": 1, "new_float": 1.0, "trigger": "step", "step": 1}
@@ -124,7 +113,7 @@ def test_write_field():
 
 
 def test_write_field_use_metadata_object():
-    os.environ['MULTIO_PLANS'] = WRITE_FILE_PLAN
+    os.environ["MULTIO_PLANS"] = WRITE_FILE_PLAN
 
     if os.path.isfile(TEST_WRITE_FILE):
         os.remove(TEST_WRITE_FILE)
@@ -144,7 +133,7 @@ def test_write_field_use_metadata_object():
 
 
 def test_write_no_metadata():
-    os.environ['MULTIO_PLANS'] = WRITE_FILE_PLAN
+    os.environ["MULTIO_PLANS"] = WRITE_FILE_PLAN
 
     if os.path.isfile(TEST_WRITE_FILE):
         os.remove(TEST_WRITE_FILE)
@@ -155,7 +144,7 @@ def test_write_no_metadata():
 
 
 def test_field_accepted():
-    os.environ['MULTIO_PLANS'] = WRITE_FILE_PLAN
+    os.environ["MULTIO_PLANS"] = WRITE_FILE_PLAN
 
     if os.path.isfile(TEST_WRITE_FILE):
         os.remove(TEST_WRITE_FILE)
@@ -172,7 +161,7 @@ def test_field_accepted():
 
 
 def test_enter_exit_connections():
-    os.environ['MULTIO_PLANS'] = WRITE_FILE_PLAN
+    os.environ["MULTIO_PLANS"] = WRITE_FILE_PLAN
 
     if os.path.isfile(TEST_WRITE_FILE):
         os.remove(TEST_WRITE_FILE)
@@ -186,15 +175,9 @@ def test_enter_exit_connections():
 
 
 def test_combined():
-    os.environ['MULTIO_PLANS'] = NO_OP_PLAN
+    os.environ["MULTIO_PLANS"] = NO_OP_PLAN
 
-    metadata = {
-      'category' : 'custom',
-      'new' : 1,
-      'new_float' : 1.0,
-      'trigger' : 'step',
-      'step': 1
-    }
+    metadata = {"category": "custom", "new": 1, "new_float": 1.0, "trigger": "step", "step": 1}
     with multiopython.Multio(**default_dict) as multio_object:
         multio_object.write_domain({"category": "domain"}, [1, 2, 3, 4])
         multio_object.write_mask({"category": "mask"}, [1.0, 0.0, 1.0, 0.0])
