@@ -18,7 +18,7 @@ class _Config:
         self.__config_path = config_path
 
         config = ffi.new("multio_configuration_t**")
-        if self.__config_path != None:
+        if self.__config_path is not None:
             configuration_file_name = ffi.new("char[]", os.fsencode(self.__config_path))
             error = lib.multio_new_configuration_from_filename(config, configuration_file_name)
             print(error)
@@ -64,7 +64,8 @@ class Multio:
     and interact with the multio c api.
 
     Parameters:
-        config_path(str|file): A file-like object to where a plan is found. If not provided MULTIO_SERVER_CONFIG_FILE is checked
+        config_path(str|file): A file-like object to where a plan is found.
+                               If not provided MULTIO_SERVER_CONFIG_FILE is checked
         allow_world(bool): Overwrite global MPI options for default splitting.
         parent_comm(array): Set MPI specific initalization parameters for parent comm.
         client_comm(array): Set MPI specific initalization parameters for client comm.
@@ -151,7 +152,7 @@ class Multio:
 
         size = len(data)
         sizeInt = ffi.cast("int", size)
-        if haveNumpy and (type(data) == np.ndarray) and (data.dtype == np.int_):
+        if haveNumpy and isinstance(data, np.ndarray) and (data.dtype is np.int_):
             intArr = ffi.from_buffer("int*", data)
             lib.multio_write_domain(self._handle, md._handle, intArr, sizeInt)
         else:
@@ -169,7 +170,7 @@ class Multio:
 
         size = len(data)
         sizeInt = ffi.cast("int", size)
-        if haveNumpy and (type(data) == np.ndarray) and ((data.dtype == np.float32) or (data.dtype == np.float64)):
+        if haveNumpy and isinstance(data, np.ndarray) and ((data.dtype is np.float32) or (data.dtype is np.float64)):
             if data.dtype == np.float32:
                 floatArr = ffi.from_buffer("float*", data)
                 lib.multio_write_mask_float(self._handle, md._handle, floatArr, sizeInt)
@@ -191,7 +192,7 @@ class Multio:
 
         size = len(data)
         sizeInt = ffi.cast("int", size)
-        if haveNumpy and (type(data) == np.ndarray) and ((data.dtype == np.float32) or (data.dtype == np.float64)):
+        if haveNumpy and isinstance(data, np.ndarray) and ((data.dtype is np.float32) or (data.dtype is np.float64)):
             if data.dtype == np.float32:
                 floatArr = ffi.from_buffer("float*", data)
                 lib.multio_write_field_float(self._handle, md._handle, floatArr, sizeInt)
@@ -218,13 +219,13 @@ class Multio:
         return bool(accept[0])
 
     def write_grib(self, data):
-        if type(data) == bytes:
+        if type(data) is bytes:
             size = len(data)
             sizeInt = ffi.cast("int", size)
             voidArr = ffi.from_buffer("void*", data)
             lib.multio_write_grib_encoded(self._handle, voidArr, sizeInt)
 
-        elif haveNumpy and (type(data) == np.ndarray):
+        elif haveNumpy and (type(data) is np.ndarray):
             size = len(data) * np.dtype.itemsize
             sizeInt = ffi.cast("int", size)
             voidArr = ffi.from_buffer("void*", data)
@@ -232,5 +233,5 @@ class Multio:
         else:
             size = len(data)
             sizeInt = ffi.cast("int", size)
-            charArr = ffi.new(f"char*", data)
+            charArr = ffi.new("char*", data)
             lib.multio_write_grib_encoded(self._handle, ffi.cast("void*", charArr), sizeInt)

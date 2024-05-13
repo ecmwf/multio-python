@@ -65,7 +65,7 @@ def test_multio_config_path():
 
 
 def test_multio_open_close_connections():
-    with multiopython.Multio(**default_dict) as multio:
+    with multiopython.Multio(**default_dict):
         pass
 
 
@@ -108,7 +108,7 @@ def test_write_field():
         multio_object.write_field(metadata, np.array([1.0, 2.0, 3.0, 4.0]))
         multio_object.flush(metadata)
         multio_object.notify(metadata)
-        assert os.path.isfile(TEST_WRITE_FILE) == True
+        assert os.path.isfile(TEST_WRITE_FILE) is True
         os.remove(TEST_WRITE_FILE)
 
 
@@ -139,7 +139,7 @@ def test_write_no_metadata():
         os.remove(TEST_WRITE_FILE)
     with multiopython.Multio(**default_dict) as multio_object:
         multio_object.write_field(None, np.array([1.0, 2.0, 3.0, 4.0]))
-        assert os.path.isfile(TEST_WRITE_FILE) == True
+        assert os.path.isfile(TEST_WRITE_FILE) is True
         os.remove(TEST_WRITE_FILE)
 
 
@@ -154,9 +154,9 @@ def test_field_accepted():
         multio_object.flush(metadata)
         multio_object.notify(metadata)
         assert (
-            multio_object.field_accepted(metadata) == False
+            multio_object.field_accepted(metadata) is False
         )  # Unsure if this should be true or false on return need to look at definition in c api
-        assert os.path.isfile(TEST_WRITE_FILE) == True
+        assert os.path.isfile(TEST_WRITE_FILE) is True
         os.remove(TEST_WRITE_FILE)
 
 
@@ -170,7 +170,7 @@ def test_enter_exit_connections():
         multio_object.write_field(metadata, np.array([1.0, 2.0, 3.0, 4.0]))
         multio_object.flush(metadata)
         multio_object.notify(metadata)
-        assert os.path.isfile(TEST_WRITE_FILE) == True
+        assert os.path.isfile(TEST_WRITE_FILE) is True
         os.remove(TEST_WRITE_FILE)
 
 

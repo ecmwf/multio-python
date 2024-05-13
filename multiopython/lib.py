@@ -40,8 +40,6 @@ class PatchedLib:
     and patches the accessors with automatic python-C error handling.
     """
 
-    __type_names = {}
-
     def __init__(self):
         ffi.cdef(self.__read_header())
 
@@ -50,12 +48,12 @@ class PatchedLib:
         if libnames is None:
             raise RuntimeError("Multio is not found")
 
-        for libname in [l for l in libnames if l is not None]:
+        for libname in [libname for libname in libnames if libname is not None]:
             try:
                 self.__lib = ffi.dlopen(libname)
                 break
-            except Exception as e:
-                last_exception = e
+            except Exception:
+                pass
 
         # All of the executable members of the CFFI-loaded library are functions in the multio
         # C API. These should be wrapped with the correct error handling. Otherwise forward
@@ -81,12 +79,6 @@ class PatchedLib:
 
         if parse_version(versionstr) < parse_version(__multio_version__):
             raise RuntimeError("Version of libmultio found is too old. {} < {}".format(versionstr, __multio_version__))
-
-    def type_name(self, dtype: "DataType"):
-        name = self.__type_names.get(dtype, None)
-        if name is not None:
-            return name
-        return name
 
     def __read_header(self):
         with open(os.path.join(os.path.dirname(__file__), "processed_multio.h"), "r") as f:
