@@ -14,6 +14,7 @@ intel_mpi:
       modules_package:
         - eckit:intel-mpi
         - atlas:intel-mpi
+        - multio:intel-mpi
       dependency_cmake_options:
         - "ecmwf/mir: '-DENABLE_BUILD_TOOLS=ON'"
         - "ecmwf/fdb: '-DENABLE_LUSTRE=OFF'"
@@ -44,6 +45,7 @@ hpcx_openmpi:
       modules_package:
         - eckit:hpcx-openmpi
         - atlas:hpcx-openmpi
+        - multio:hpcx-openmpi
       dependency_cmake_options:
         - "ecmwf/mir: '-DENABLE_BUILD_TOOLS=ON'"
         - "ecmwf/fdb: '-DENABLE_LUSTRE=OFF'"
@@ -74,6 +76,7 @@ openmpi:
       modules_package:
         - eckit:openmpi
         - atlas:openmpi
+        - multio:openmpi
       dependency_cmake_options:
         - "ecmwf/mir: '-DENABLE_BUILD_TOOLS=ON'"
         - "ecmwf/fdb: '-DENABLE_LUSTRE=OFF'"
