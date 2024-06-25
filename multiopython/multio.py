@@ -152,7 +152,7 @@ class Multio:
 
         size = len(data)
         sizeInt = ffi.cast("int", size)
-        if haveNumpy and isinstance(data, np.ndarray) and (data.dtype is np.int_):
+        if haveNumpy and isinstance(data, np.ndarray) and (data.dtype == np.int_):
             intArr = ffi.from_buffer("int*", data)
             lib.multio_write_domain(self._handle, md._handle, intArr, sizeInt)
         else:
@@ -170,7 +170,7 @@ class Multio:
 
         size = len(data)
         sizeInt = ffi.cast("int", size)
-        if haveNumpy and isinstance(data, np.ndarray) and ((data.dtype is np.float32) or (data.dtype is np.float64)):
+        if haveNumpy and isinstance(data, np.ndarray) and ((data.dtype == np.float32) or (data.dtype == np.float64)):
             if data.dtype == np.float32:
                 floatArr = ffi.from_buffer("float*", data)
                 lib.multio_write_mask_float(self._handle, md._handle, floatArr, sizeInt)
@@ -192,7 +192,7 @@ class Multio:
 
         size = len(data)
         sizeInt = ffi.cast("int", size)
-        if haveNumpy and isinstance(data, np.ndarray) and ((data.dtype is np.float32) or (data.dtype is np.float64)):
+        if haveNumpy and isinstance(data, np.ndarray) and ((data.dtype == np.float32) or (data.dtype == np.float64)):
             if data.dtype == np.float32:
                 floatArr = ffi.from_buffer("float*", data)
                 lib.multio_write_field_float(self._handle, md._handle, floatArr, sizeInt)
