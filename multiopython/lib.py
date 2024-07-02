@@ -43,17 +43,16 @@ class PatchedLib:
     def __init__(self):
         ffi.cdef(self.__read_header())
 
-        libnames = [findlibs.find("multio-api")]
+        libname = findlibs.find("multio-api")
+        self.__lib = None
 
-        if libnames is None:
+        if libname is None:
             raise RuntimeError("Multio is not found")
 
-        for libname in [libname for libname in libnames if libname is not None]:
-            try:
-                self.__lib = ffi.dlopen(libname)
-                break
-            except Exception:
-                pass
+        try:
+            self.__lib = ffi.dlopen(libname)
+        except Exception as e:
+            raise RuntimeError("Error loading the following library: {}".format(libname)) from e
 
         # All of the executable members of the CFFI-loaded library are functions in the multio
         # C API. These should be wrapped with the correct error handling. Otherwise forward

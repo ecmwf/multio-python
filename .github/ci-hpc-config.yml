@@ -1,123 +1,130 @@
-matrix:
-    - openmpi
-    - hpcx_openmpi
-    - intel_mpi
-    - mpi_off
+# !!! Turned off the matrix due to connection issues to anaconda when two many runners are connecting? (just a guess).  Just one runner works
 
 
-intel_mpi:
-    build:
-      python: '3.10'
-      modules:
-        - ninja
-        - intel-mpi
-      modules_package:
-        - eckit:intel-mpi
-        - atlas:intel-mpi
-        - multio:intel-mpi
-      dependency_cmake_options:
-        - "ecmwf/mir: '-DENABLE_BUILD_TOOLS=ON'"
-        - "ecmwf/fdb: '-DENABLE_LUSTRE=OFF'"
-      dependencies:
-        - ecmwf/ecbuild@develop
-        - ecmwf/eccodes@develop
-        - ecmwf/eckit@develop
-        - ecmwf/metkit@develop
-        - ecmwf/fckit@develop
-        - ecmwf/fdb@develop
-        - ecmwf/atlas@develop
-        - ecmwf/atlas-orca@develop
-        - ecmwf/mir@develop
-      parallel: 64
-      ntasks: 16
-      env:
-        - CTEST_PARALLEL_LEVEL=1
-        - OMPI_MCA_rmaps_base_oversubscribe=1
-        - ECCODES_SAMPLES_PATH=$ECCODES_DIR/share/eccodes/samples
-        - ECCODES_DEFINITION_PATH=$ECCODES_DIR/share/eccodes/definitions
+# matrix:
+#     - openmpi
+#     - hpcx_openmpi
+#     - intel_mpi
+#     - mpi_off
 
-hpcx_openmpi:
-    build:
-      python: '3.10'
-      modules:
-        - ninja
-        - hpcx-openmpi
-      modules_package:
-        - eckit:hpcx-openmpi
-        - atlas:hpcx-openmpi
-        - multio:hpcx-openmpi
-      dependency_cmake_options:
-        - "ecmwf/mir: '-DENABLE_BUILD_TOOLS=ON'"
-        - "ecmwf/fdb: '-DENABLE_LUSTRE=OFF'"
-      dependencies:
-        - ecmwf/ecbuild@develop
-        - ecmwf/eccodes@develop
-        - ecmwf/eckit@develop
-        - ecmwf/metkit@develop
-        - ecmwf/fckit@develop
-        - ecmwf/fdb@develop
-        - ecmwf/atlas@develop
-        - ecmwf/atlas-orca@develop
-        - ecmwf/mir@develop
-      parallel: 64
-      ntasks: 16
-      env:
-        - CTEST_PARALLEL_LEVEL=1
-        - OMPI_MCA_rmaps_base_oversubscribe=1
-        - ECCODES_SAMPLES_PATH=$ECCODES_DIR/share/eccodes/samples
-        - ECCODES_DEFINITION_PATH=$ECCODES_DIR/share/eccodes/definitions
 
-openmpi:
-    build:
-      python: '3.10'
-      modules:
-        - ninja
-        - openmpi
-      modules_package:
-        - eckit:openmpi
-        - atlas:openmpi
-        - multio:openmpi
-      dependency_cmake_options:
-        - "ecmwf/mir: '-DENABLE_BUILD_TOOLS=ON'"
-        - "ecmwf/fdb: '-DENABLE_LUSTRE=OFF'"
-      dependencies:
-        - ecmwf/ecbuild@develop
-        - ecmwf/eccodes@develop
-        - ecmwf/eckit@develop
-        - ecmwf/metkit@develop
-        - ecmwf/fckit@develop
-        - ecmwf/fdb@develop
-        - ecmwf/atlas@develop
-        - ecmwf/atlas-orca@develop
-        - ecmwf/mir@develop
-      parallel: 64
-      ntasks: 16
-      env:
-        - CTEST_PARALLEL_LEVEL=1
-        - OMPI_MCA_rmaps_base_oversubscribe=1
-        - ECCODES_SAMPLES_PATH=$ECCODES_DIR/share/eccodes/samples
-        - ECCODES_DEFINITION_PATH=$ECCODES_DIR/share/eccodes/definitions
+# intel_mpi:
+#     build:
+#       python: '3.10'
+#       modules:
+#         - ninja
+#         - intel-mpi
+#       modules_package:
+#         - eckit:intel-mpi
+#         - atlas:intel-mpi
+#         - multio:intel-mpi
+#       dependency_cmake_options:
+#         - "ecmwf/mir: '-DENABLE_BUILD_TOOLS=ON'"
+#         - "ecmwf/fdb: '-DENABLE_LUSTRE=OFF'"
+#       dependencies:
+#         - ecmwf/ecbuild@develop
+#         - ecmwf/eccodes@develop
+#         - ecmwf/eckit@develop
+#         - ecmwf/metkit@develop
+#         - ecmwf/fckit@develop
+#         - ecmwf/fdb@develop
+#         - ecmwf/atlas@develop
+#         - ecmwf/atlas-orca@develop
+#         - ecmwf/mir@develop
+#         - ecmwf/multio@develop
+#       parallel: 64
+#       ntasks: 16
+#       env:
+#         - CTEST_PARALLEL_LEVEL=1
+#         - OMPI_MCA_rmaps_base_oversubscribe=1
+#         - ECCODES_SAMPLES_PATH=$ECCODES_DIR/share/eccodes/samples
+#         - ECCODES_DEFINITION_PATH=$ECCODES_DIR/share/eccodes/definitions
 
-mpi_off:
-    build:
-      python: '3.10'
-      modules:
-        - ninja
-      dependency_cmake_options:
-        - "ecmwf/mir: '-DENABLE_BUILD_TOOLS=ON'"
-        - "ecmwf/fdb: '-DENABLE_LUSTRE=OFF'"
-      dependencies:
-        - ecmwf/ecbuild@develop
-        - ecmwf/eccodes@develop
-        - ecmwf/eckit@develop
-        - ecmwf/metkit@develop
-        - ecmwf/fckit@develop
-        - ecmwf/fdb@develop
-        - ecmwf/atlas@develop
-        - ecmwf/atlas-orca@develop
-        - ecmwf/mir@develop
-      parallel: 64
-      env:
-        - CTEST_PARALLEL_LEVEL=1
-        - ECCODES_SAMPLES_PATH=$ECCODES_DIR/share/eccodes/samples
-        - ECCODES_DEFINITION_PATH=$ECCODES_DIR/share/eccodes/definitions
+# hpcx_openmpi:
+#     build:
+#       python: '3.10'
+#       modules:
+#         - ninja
+#         - hpcx-openmpi
+#       modules_package:
+#         - eckit:hpcx-openmpi
+#         - atlas:hpcx-openmpi
+#         - multio:hpcx-openmpi
+#       dependency_cmake_options:
+#         - "ecmwf/mir: '-DENABLE_BUILD_TOOLS=ON'"
+#         - "ecmwf/fdb: '-DENABLE_LUSTRE=OFF'"
+#       dependencies:
+#         - ecmwf/ecbuild@develop
+#         - ecmwf/eccodes@develop
+#         - ecmwf/eckit@develop
+#         - ecmwf/metkit@develop
+#         - ecmwf/fckit@develop
+#         - ecmwf/fdb@develop
+#         - ecmwf/atlas@develop
+#         - ecmwf/atlas-orca@develop
+#         - ecmwf/mir@develop
+#         - ecmwf/multio@develop
+#       parallel: 64
+#       ntasks: 16
+#       env:
+#         - CTEST_PARALLEL_LEVEL=1
+#         - OMPI_MCA_rmaps_base_oversubscribe=1
+#         - ECCODES_SAMPLES_PATH=$ECCODES_DIR/share/eccodes/samples
+#         - ECCODES_DEFINITION_PATH=$ECCODES_DIR/share/eccodes/definitions
+
+# openmpi:
+#     build:
+#       python: '3.10'
+#       modules:
+#         - ninja
+#         - openmpi
+#       modules_package:
+#         - eckit:openmpi
+#         - atlas:openmpi
+#         - multio:openmpi
+#       dependency_cmake_options:
+#         - "ecmwf/mir: '-DENABLE_BUILD_TOOLS=ON'"
+#         - "ecmwf/fdb: '-DENABLE_LUSTRE=OFF'"
+#       dependencies:
+#         - ecmwf/ecbuild@develop
+#         - ecmwf/eccodes@develop
+#         - ecmwf/eckit@develop
+#         - ecmwf/metkit@develop
+#         - ecmwf/fckit@develop
+#         - ecmwf/fdb@develop
+#         - ecmwf/atlas@develop
+#         - ecmwf/atlas-orca@develop
+#         - ecmwf/mir@develop
+#         - ecmwf/multio@develop
+#       parallel: 64
+#       ntasks: 16
+#       env:
+#         - CTEST_PARALLEL_LEVEL=1
+#         - OMPI_MCA_rmaps_base_oversubscribe=1
+#         - ECCODES_SAMPLES_PATH=$ECCODES_DIR/share/eccodes/samples
+#         - ECCODES_DEFINITION_PATH=$ECCODES_DIR/share/eccodes/definitions
+
+# mpi_off:
+build:
+  python: '3.10'
+  modules:
+    - ninja
+  dependency_cmake_options:
+    - "ecmwf/mir: '-DENABLE_BUILD_TOOLS=ON'"
+    - "ecmwf/fdb: '-DENABLE_LUSTRE=OFF'"
+  dependencies:
+    - ecmwf/ecbuild@develop
+    - ecmwf/eccodes@develop
+    - ecmwf/eckit@develop
+    - ecmwf/metkit@develop
+    - ecmwf/fckit@develop
+    - ecmwf/fdb@develop
+    - ecmwf/atlas@develop
+    - ecmwf/atlas-orca@develop
+    - ecmwf/mir@develop
+    - ecmwf/multio@develop
+  parallel: 64
+  env:
+    - CTEST_PARALLEL_LEVEL=1
+    - ECCODES_SAMPLES_PATH=$ECCODES_DIR/share/eccodes/samples
+    - ECCODES_DEFINITION_PATH=$ECCODES_DIR/share/eccodes/definitions
