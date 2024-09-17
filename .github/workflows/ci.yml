@@ -56,4 +56,4 @@ jobs:
           notify_on: |
             failure
             fixed
-            # success
+            success
