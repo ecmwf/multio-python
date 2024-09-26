@@ -60,7 +60,7 @@ class _Config:
 class Multio:
     """
     This is the main interface class for Multio that users will interact with. It takes in
-    a config file abd creates a multio handle, through this class a user can write data
+    a config file and creates a multio handle, through this class a user can write data
     and interact with the multio c api.
 
     Parameters:
