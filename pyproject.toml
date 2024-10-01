@@ -42,6 +42,7 @@ dependencies = [
   "cffi",
   "numpy",
   "findlibs",
+  "pydantic",
 ]
 
 optional-dependencies.all = [ "multio-python" ]
