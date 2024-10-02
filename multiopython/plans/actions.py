@@ -104,7 +104,7 @@ class Sink(Action):
     """Sink Action"""
 
     type: Literal["sink"] = "sink"
-    sinks: list[SinkType]
+    sinks: list[SinkType] = Field([])
 
     @validate_call
     def add_sink(self, sink: SinkType):
