@@ -58,7 +58,7 @@ class MultioPlan(ContextDecorator):
 
     def set_plan(self):
         self._prior_plan = os.environ.get(self._environ_var, None)
-        os.environ[self._environ_var] = str(self._plan.dump())
+        os.environ[self._environ_var] = self._plan.dump_json()
 
     def revert_plan(self):
         if self._prior_plan is not None:

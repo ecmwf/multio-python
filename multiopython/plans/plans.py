@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import Any, Self
+import os
+from typing import Any, Literal
 
-from pydantic import BaseModel, Field, validate_call
+from pydantic import BaseModel, Field, field_validator, validate_call
 from pydantic.functional_validators import WrapValidator
 from typing_extensions import Annotated
 
-from .actions import ACTIONS, Action
+from .actions import ACTIONS, Action, Sink
 from .utils import make_validator
 
 
@@ -33,14 +34,14 @@ class MultioBaseModel(BaseModel):
     """Multio Base Model"""
 
     @classmethod
-    def from_yamlfile(cls, file):
+    def from_yamlfile(cls, file: str):
         """
         Create a model from a YAML file
         """
         return cls.from_yaml(open(file))
 
     @classmethod
-    def from_yaml(cls, yaml_str):
+    def from_yaml(cls, yaml_str: str):
         """
         Create a model from a YAML string
         """
@@ -48,23 +49,51 @@ class MultioBaseModel(BaseModel):
 
         return cls.model_validate(yaml.safe_load(yaml_str))
 
-    def write(self, file):
+    @validate_call
+    def write(self, file: os.PathLike, *, format: Literal["yaml", "json"] = "yaml") -> None:
         """
         Write the model to a file
-        """
-        with open(file, "w") as f:
-            f.write(self.dump())
 
-    def dump(self):
+        Parameters
+        ----------
+        file : os.PathLike
+            Path to write to
+        format : Literal['yaml', 'json']
+            Package to use for dumping, defaults to 'yaml'.
         """
-        Dump the model to a json string
+        if format == "yaml":
+            import yaml
+
+            method = yaml.safe_dump
+        elif format == "json":
+            import json
+
+            method = json.dump
+
+        with open(file, "w") as f:
+            method(self.dump(), f)
+
+    def dump(self) -> dict:
         """
-        return self.model_dump(mode="json", serialize_as_any=True)
+        Dump the model to a python dict
+        """
+        return self.model_dump(serialize_as_any=True)
+
+    def dump_json(self) -> str:
+        """
+        Dump the model to a JSON string
+        """
+        import json
+
+        return json.dumps(self.dump())
 
 
 class Plan(MultioBaseModel):
     """
     Multio Plan
+
+    Multio requires a valid plan to contain at least one Sink.
+    So if none provided by the user, an empty one will be auto appended.
 
     Examples:
     ```python
@@ -77,7 +106,23 @@ class Plan(MultioBaseModel):
     """
 
     name: Name = Field(title="Name", description="Name of the plan")
-    actions: list[Actions] = Field([], title="Actions", description="List of actions to be performed")
+    actions: list[Actions] = Field(
+        [], title="Actions", description="List of actions to be performed", validate_default=True
+    )
+
+    @field_validator("actions")
+    @classmethod
+    def __check_has_sink(cls, v):
+        if len(v) == 0:
+            return [Sink()]
+        contains_sink = False
+        for action in v:
+            if isinstance(action, Sink):
+                contains_sink = True
+                break
+        if not contains_sink:
+            v.append(Sink())
+        return v
 
     @validate_call
     def add_action(self, action: Actions):
@@ -90,7 +135,7 @@ class Plan(MultioBaseModel):
     def to_config(self) -> Config:
         return Config(plans=[self])
 
-    def __add__(self, other: Self) -> Self:
+    def __add__(self, other) -> Config:
         if not isinstance(other, Plan):
             return NotImplemented
         return Config(plans=[self, other])
