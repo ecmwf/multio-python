@@ -1,4 +1,11 @@
-from typing import Literal
+# (C) Copyright 2024 European Centre for Medium-Range Weather Forecasts.
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+# In applying this licence, ECMWF does not waive the privileges and immunities
+# granted to it by virtue of its status as an intergovernmental organisation
+# nor does it submit to any jurisdiction.
+
+from typing import Literal, Union
 
 from pydantic import BaseModel, Field
 
@@ -13,7 +20,7 @@ class FDB(Sinks):
     """FDB Sink"""
 
     type: Literal["fdb"] = "fdb"
-    config: dict = Field({}, title="Config", description="FDB configuration")
+    config: dict = Field(default_factory=lambda: {}, title="Config", description="FDB configuration")
 
 
 class File(Sinks):
@@ -31,6 +38,6 @@ class Socket(Sinks):  # TO BE ADDED
     type: Literal["socket"] = "socket"
 
 
-SINKS = {"fdb": FDB, "file": File}
+SINKS = Union[FDB, File, Socket]
 
 __all__ = ["Sinks", "FDB", "File", "SINKS"]
