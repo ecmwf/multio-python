@@ -76,6 +76,14 @@ class MultioBaseModel(BaseModel):
 
         return json.dumps(self.dump())
 
+    def dump_yaml(self) -> str:
+        """
+        Dump the model to a yaml string
+        """
+        import yaml
+
+        return yaml.safe_dump(self.dump())
+
 
 class Plan(MultioBaseModel):
     """
