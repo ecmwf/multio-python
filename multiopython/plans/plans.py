@@ -147,7 +147,7 @@ class Config(MultioBaseModel):
     ```
     """
 
-    plans: list[Plan] = Field(default_factory=lambda: {}, title="Plans", description="List of plans to be executed")
+    plans: list[Plan] = Field(default_factory=lambda: [], title="Plans", description="List of plans to be executed")
 
     @validate_call
     def add_plan(self, plan: Plan):
