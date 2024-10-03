@@ -1,31 +1,20 @@
+# (C) Copyright 2024 European Centre for Medium-Range Weather Forecasts.
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+# In applying this licence, ECMWF does not waive the privileges and immunities
+# granted to it by virtue of its status as an intergovernmental organisation
+# nor does it submit to any jurisdiction.
+
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Any, Literal, Union
 
-from pydantic import BaseModel, Field, ValidationInfo, WrapValidator, field_validator, validate_call
+from pydantic import BaseModel, Field, ValidationInfo, field_validator, validate_call
 from typing_extensions import Annotated
 
-from .sinks import SINKS, Sinks
-from .utils import make_validator
+from .sinks import SINKS
 
-
-def convert_to_sinks(v: Any) -> Sinks:
-    """
-    Convert a general dict to a Sinks instance
-    """
-    if not isinstance(v, (Sinks, dict)):
-        raise ValueError(f"Sinks must be a dict or an instance of Sinks, not {type(v)}")
-    if isinstance(v, Sinks):
-        return v
-    if "type" not in v:
-        raise ValueError("Sinks must have a type")
-    if v["type"] not in SINKS:
-        raise ValueError(f"Invalid sink type, must be one of {list(SINKS.keys())}")
-    sink = SINKS[v["type"]](**v)
-    return sink
-
-
-SinkType = Annotated[dict | Sinks, WrapValidator(make_validator(convert_to_sinks))]
+SinksType = Annotated[SINKS, Field(discriminator="type", alias="sinks", title="Sinks")]
 
 
 class Action(BaseModel):
@@ -67,7 +56,7 @@ class Print(Action):
 
     type: Literal["print"] = "print"
     stream: Literal["cout"] = Field("cout")
-    prefix: str = Field("")
+    prefix: str = Field(default_factory=lambda: "")
 
 
 class Mask(Action):
@@ -104,22 +93,17 @@ class Sink(Action):
     """Sink Action"""
 
     type: Literal["sink"] = "sink"
-    sinks: list[SinkType] = Field([])
+    sinks: list[SinksType] = Field(default_factory=lambda: [])
 
     @validate_call
-    def add_sink(self, sink: SinkType):
+    def add_sink(self, sink: SinksType):
         self.sinks.append(sink)
 
+    @validate_call
+    def extend_sinks(self, sink: list[SinksType]):
+        self.sinks.extend(sink)
 
-ACTIONS = {
-    "select": Select,
-    "statistics": Statistics,
-    "transport": Transport,
-    "aggregation": Aggregation,
-    "mask": Mask,
-    "encode": Encode,
-    "sink": Sink,
-    "print": Print,
-}
+
+ACTIONS = Union[Select, Statistics, Transport, Aggregation, Print, Mask, Encode, Sink]
 
 __all__ = ["ACTIONS", "Action", "Select", "Statistics", "Transport", "Aggregation", "Print", "Mask", "Encode", "Sink"]

@@ -1,33 +1,22 @@
+# (C) Copyright 2024 European Centre for Medium-Range Weather Forecasts.
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+# In applying this licence, ECMWF does not waive the privileges and immunities
+# granted to it by virtue of its status as an intergovernmental organisation
+# nor does it submit to any jurisdiction.
+
 from __future__ import annotations
 
 import os
-from typing import Any, Literal
+from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator, validate_call
-from pydantic.functional_validators import WrapValidator
 from typing_extensions import Annotated
 
-from .actions import ACTIONS, Action, Sink
-from .utils import make_validator
+from .actions import ACTIONS, Sink
 
-
-def convert_to_actions(
-    v: Any,
-) -> Action:
-    if not isinstance(v, (Action, dict)):
-        raise ValueError(f"Action must be a dict or an instance of Action, not {type(v)}")
-    if isinstance(v, Action):
-        return v
-    if "type" not in v:
-        raise ValueError("Action must have a type")
-    if v["type"] not in ACTIONS:
-        raise ValueError(f"Invalid action type, should be one of {list(ACTIONS.keys())}")
-    action = ACTIONS[v["type"]](**v)
-    return action
-
-
-Actions = Annotated[dict | Action, WrapValidator(make_validator(convert_to_actions))]
 Name = Annotated[str, lambda x: x.replace(" ", "-")]
+Actions = Annotated[ACTIONS, Field(discriminator="type", alias="actions", title="Actions")]
 
 
 class MultioBaseModel(BaseModel):
@@ -107,20 +96,22 @@ class Plan(MultioBaseModel):
 
     name: Name = Field(title="Name", description="Name of the plan")
     actions: list[Actions] = Field(
-        [], title="Actions", description="List of actions to be performed", validate_default=True
+        default_factory=lambda: [],
+        title="Actions",
+        description="List of actions to be performed",
+        validate_default=True,
     )
 
     @field_validator("actions")
     @classmethod
     def __check_has_sink(cls, v):
+        """Force actions to contain at least one Sink
+
+        As Multio requires a valid plan to contain at least one Sink,
+        """
         if len(v) == 0:
             return [Sink()]
-        contains_sink = False
-        for action in v:
-            if isinstance(action, Sink):
-                contains_sink = True
-                break
-        if not contains_sink:
+        if not any([isinstance(action, Sink) for action in v]):
             v.append(Sink())
         return v
 
@@ -156,7 +147,7 @@ class Config(MultioBaseModel):
     ```
     """
 
-    plans: list[Plan] = Field([], title="Plans", description="List of plans to be executed")
+    plans: list[Plan] = Field(default_factory=lambda: {}, title="Plans", description="List of plans to be executed")
 
     @validate_call
     def add_plan(self, plan: Plan):
