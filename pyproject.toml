@@ -43,6 +43,8 @@ dependencies = [
   "numpy",
   "findlibs",
   "pydantic",
+  "yaml",
+  "json",
 ]
 
 optional-dependencies.all = [ "multio-python" ]
