@@ -41,6 +41,8 @@ dynamic = [ "version" ]
 dependencies = [
   "cffi",
   "pydantic",
+  "yaml",
+  "json",
 ]
 
 optional-dependencies.all = [ "multio-python" ]
