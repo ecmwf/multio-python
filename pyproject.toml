@@ -40,11 +40,10 @@ classifiers = [
 dynamic = [ "version" ]
 dependencies = [
   "cffi",
+  "pydantic",
+  "pyyaml",
   "numpy",
   "findlibs",
-  "pydantic",
-  "yaml",
-  "json",
 ]
 
 optional-dependencies.all = [ "multio-python" ]
