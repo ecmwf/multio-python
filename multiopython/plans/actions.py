@@ -56,7 +56,7 @@ class Print(Action):
 
     type: Literal["print"] = "print"
     stream: Literal["cout"] = Field("cout")
-    prefix: str = Field(default_factory=lambda: "")
+    prefix: str = ""
 
 
 class Mask(Action):
