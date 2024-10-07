@@ -42,7 +42,7 @@ dependencies = [
   "cffi",
 ]
 
-optional-dependencies.all = [ "multiopython" ]
+optional-dependencies.all = [ "multio-python" ]
 
 optional-dependencies.tests = [ "pytest", "pytest-cov", "pytest-flakes" ]
 
@@ -56,10 +56,10 @@ include-package-data = true
 zip-safe = true
 
 [tool.setuptools_scm]
-version_file = "multiopython/_version.py"
+version_file = "multio/_version.py"
 
 [tool.setuptools.package-data]
-multiopython = ["*.h"]
+multio = ["*.h"]
 
 [tool.black]
 line-length = 120
