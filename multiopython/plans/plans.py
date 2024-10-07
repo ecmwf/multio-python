@@ -8,7 +8,7 @@
 from __future__ import annotations
 
 import os
-from typing import Literal
+from typing import Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator, validate_call
 from typing_extensions import Annotated
@@ -156,6 +156,9 @@ class Config(MultioBaseModel):
     """
 
     plans: list[Plan] = Field(default_factory=lambda: [], title="Plans", description="List of plans to be executed")
+    transport: Optional[str] = Field(None, title="Transport", description="Transport protocol to use")
+    group: Optional[str] = None
+    count: Optional[int] = None
 
     @validate_call
     def add_plan(self, plan: Plan):
