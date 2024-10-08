@@ -4,7 +4,7 @@ import os
 # Optional
 import numpy as np
 
-from multiopython import Multio
+from multio import Multio
 
 dir = os.path.dirname(__file__)
 
