@@ -80,12 +80,13 @@ class Encode(Action):
     format: Literal["grib", "raw"]
     template: str | None = Field(None, validate_default=True)
     grid_type: str | None = Field(None, serialization_alias="grid-type")
+    atlas_named_grid : str | None = Field(None, serialization_alias="atlas-named-grid")
 
-    @field_validator("template", "grid_type", mode="after")
+    @field_validator("template", mode="after")
     @classmethod
     def check_not_none(cls, v: str, info: ValidationInfo) -> str:
         if info.data.get("format") == "grib" and v is None:
-            raise ValueError("template & grid_type is required for grib format")
+            raise ValueError("template is required for grib format")
         return v
 
 
