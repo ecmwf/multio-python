@@ -56,14 +56,18 @@ class Print(Action):
     """Print Action"""
 
     type: Literal["print"] = "print"
-    stream: Literal["cout"] = Field("cout")
+    stream: Literal["cout", "info", "error"] = "info"
     prefix: str = ""
+    only_fields: bool = Field(False, serialization_alias="only-fields")
 
 
 class Mask(Action):
     """Mask Action"""
 
     type: Literal["mask"] = "mask"
+    apply_bitmap: bool = Field(True, serialization_alias="apply-bitmap")
+    missing_value: float = Field(None, serialization_alias="missing-value") # Need to set to max
+    offset_value: float = Field(273.15, serialization_alias="offset-value") 
 
 
 def force_on_grib(v: str, info: ValidationInfo) -> str:

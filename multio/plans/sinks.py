@@ -16,11 +16,28 @@ class Sinks(BaseModel):
 
     type: str
 
+class Debug(Sinks):
+    """Debug Sink"""
+
+    type: Literal["debug-sink"] = "debug-sink"
+
+class Trigger(Sinks):
+    """Trigger Sink"""
+
+    type: Literal["trigger"] = "trigger"
+    file: Path = Field(title="File", description="Path to trigger file")
+    key: str
+    host: str
+    failOnRetry: bool = False
+    port: int = 10000
+    retries: int = 5
+    timeout: int = 60
+
 
 class FDB(Sinks):
     """FDB Sink"""
 
-    type: Literal["fdb"] = "fdb"
+    type: Literal["fdb5"] = "fdb5"
     config: Path = Field("", title="Config", description="Path to FDB configuration")
 
 
@@ -39,6 +56,6 @@ class Socket(Sinks):  # TO BE ADDED
     type: Literal["socket"] = "socket"
 
 
-SINKS = Union[FDB, File, Socket]
+SINKS = Union[FDB, File, Socket, Debug]
 
 __all__ = ["Sinks", "FDB", "File", "SINKS"]
