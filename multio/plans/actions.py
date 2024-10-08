@@ -11,6 +11,7 @@ from typing import Any, Literal, Union
 
 from pydantic import BaseModel, Field, ValidationInfo, field_validator, validate_call
 from typing_extensions import Annotated
+from pathlib import Path
 
 from .sinks import SINKS
 
@@ -78,7 +79,7 @@ class Encode(Action):
 
     type: Literal["encode"] = "encode"
     format: Literal["grib", "raw"]
-    template: str | None = Field(None, validate_default=True)
+    template: Path | None = Field(None, validate_default=True)
     grid_type: str | None = Field(None, serialization_alias="grid-type")
     atlas_named_grid : str | None = Field(None, serialization_alias="atlas-named-grid")
 

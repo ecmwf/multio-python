@@ -8,6 +8,7 @@
 from typing import Literal, Union
 
 from pydantic import BaseModel, Field
+from pathlib import Path
 
 
 class Sinks(BaseModel):
@@ -20,7 +21,7 @@ class FDB(Sinks):
     """FDB Sink"""
 
     type: Literal["fdb"] = "fdb"
-    config: str = Field("", title="Config", description="Path to FDB configuration")
+    config: Path = Field("", title="Config", description="Path to FDB configuration")
 
 
 class File(Sinks):
