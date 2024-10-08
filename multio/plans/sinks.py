@@ -5,10 +5,10 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
+from pathlib import Path
 from typing import Literal, Union
 
 from pydantic import BaseModel, Field
-from pathlib import Path
 
 
 class Sinks(BaseModel):
