@@ -16,7 +16,7 @@ from typing_extensions import Annotated
 from .actions import ACTIONS, Sink
 
 Name = Annotated[str, lambda x: x.replace(" ", "-")]
-Actions = Annotated[ACTIONS, Field(discriminator="type", alias="actions", title="Actions")]
+Actions = Annotated[ACTIONS, Field(discriminator="type", title="Actions")]
 
 
 class MultioBaseModel(BaseModel):

@@ -14,7 +14,7 @@ from typing_extensions import Annotated
 
 from .sinks import SINKS
 
-SinksType = Annotated[SINKS, Field(discriminator="type", alias="sinks", title="Sinks")]
+SinksType = Annotated[SINKS, Field(discriminator="type", title="Sinks")]
 
 
 class Action(BaseModel):
