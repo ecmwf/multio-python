@@ -5,7 +5,7 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
-from multiopython import MultioPlan, plans
+from multio import MultioPlan, plans
 
 
 def test_from_config():

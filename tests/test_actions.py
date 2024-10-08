@@ -7,8 +7,8 @@
 
 import pytest
 
-from multiopython.plans import sinks
-from multiopython.plans.actions import Aggregation, Encode, Mask, Print, Select, Sink, Transport
+from multio.plans import sinks
+from multio.plans.actions import Aggregation, Encode, Mask, Print, Select, Sink, Transport
 
 
 @pytest.mark.parametrize(

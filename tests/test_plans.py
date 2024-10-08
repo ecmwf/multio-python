@@ -8,8 +8,8 @@
 import pytest
 from pydantic import ValidationError
 
-import multiopython
-from multiopython.plans import Config, Plan, actions
+import multio
+from multio.plans import Config, Plan, actions
 
 sample_plan = {
     "plans": [
@@ -33,23 +33,23 @@ def test_sample_config():
 
 def test_with_multio_server_sample():
     config = Config(**sample_plan)
-    with multiopython.MultioPlan(config):
-        with multiopython.Multio():
+    with multio.MultioPlan(config):
+        with multio.Multio():
             pass
 
 
 def test_with_multio_server_empty():
     config = Config(name="empty")
-    with multiopython.MultioPlan(config):
-        with multiopython.Multio():
+    with multio.MultioPlan(config):
+        with multio.Multio():
             pass
 
 
 def test_with_multio_server_add():
     config = Config(name="empty")
     config.add_plan(Plan(name="print", actions=[{"type": "print"}]))
-    with multiopython.MultioPlan(config):
-        with multiopython.Multio():
+    with multio.MultioPlan(config):
+        with multio.Multio():
             pass
 
 
