@@ -16,10 +16,12 @@ class Sinks(BaseModel):
 
     type: str
 
+
 class Debug(Sinks):
     """Debug Sink"""
 
     type: Literal["debug-sink"] = "debug-sink"
+
 
 class Trigger(Sinks):
     """Trigger Sink"""

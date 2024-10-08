@@ -66,16 +66,8 @@ class Mask(Action):
 
     type: Literal["mask"] = "mask"
     apply_bitmap: bool = Field(True, serialization_alias="apply-bitmap")
-    missing_value: float = Field(None, serialization_alias="missing-value") # Need to set to max
-    offset_value: float = Field(273.15, serialization_alias="offset-value") 
-
-
-def force_on_grib(v: str, info: ValidationInfo) -> str:
-    """Force template and grid_type on grib format"""
-    if info.format == "grib":
-        if v is None:
-            raise ValueError("template & grid_type is required for grib format")
-    return v
+    missing_value: float = Field(None, serialization_alias="missing-value")  # Need to set to max
+    offset_value: float = Field(273.15, serialization_alias="offset-value")
 
 
 class Encode(Action):
@@ -86,6 +78,7 @@ class Encode(Action):
     template: Path | None = Field(None, validate_default=True)
     grid_type: str | None = Field(None, serialization_alias="grid-type")
     atlas_named_grid: str | None = Field(None, serialization_alias="atlas-named-grid")
+    additional_metadata: dict[str, Any] = Field(default_factory=dict, serialization_alias="additional-metadata")
 
     @field_validator("template", mode="after")
     @classmethod
