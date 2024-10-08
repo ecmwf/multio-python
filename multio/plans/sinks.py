@@ -20,7 +20,7 @@ class FDB(Sinks):
     """FDB Sink"""
 
     type: Literal["fdb"] = "fdb"
-    config: dict = Field(default_factory=lambda: {}, title="Config", description="FDB configuration")
+    config: str = Field("", title="Config", description="Path to FDB configuration")
 
 
 class File(Sinks):
