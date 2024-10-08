@@ -113,11 +113,11 @@ def test_write_field():
 
 
 def test_write_field_with_context():
-    with multiopython.MultioPlan(WRITE_FILE_PLAN):
+    with multio.MultioPlan(WRITE_FILE_PLAN):
         if os.path.isfile(TEST_WRITE_FILE):
             os.remove(TEST_WRITE_FILE)
-        with multiopython.Multio(**default_dict) as multio_object:
-            metadata = multiopython.Metadata(multio_object, None)
+        with multio.Multio(**default_dict) as multio_object:
+            metadata = multio.Metadata(multio_object, None)
             metadata["category"] = "path"
             metadata["new"] = 1
             metadata["new_float"] = 1.0
@@ -136,8 +136,8 @@ def test_write_field_use_metadata_object():
 
     if os.path.isfile(TEST_WRITE_FILE):
         os.remove(TEST_WRITE_FILE)
-    with multiopython.Multio(**default_dict) as multio_object:
-        metadata = multiopython.Metadata(multio_object, None)
+    with multio.Multio(**default_dict) as multio_object:
+        metadata = multio.Metadata(multio_object, None)
         metadata["category"] = "path"
         metadata["new"] = 1
         metadata["new_float"] = 1.0
