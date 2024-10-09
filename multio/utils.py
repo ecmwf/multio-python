@@ -10,9 +10,40 @@ from __future__ import annotations
 import os
 from contextlib import ContextDecorator
 
-from .plans import Config
+from .plans.plans import Client, Server, Collection, BaseConfig
 
 FILE = os.PathLike
+
+
+def parse_plan_from_str(plan: str) -> dict:
+    """
+    Parse a plan from a string
+
+    Parameters
+    ----------
+    plan : str
+        Plan to be parsed
+
+    Returns
+    -------
+    dict
+        Parsed plan
+    """
+    import yaml
+    import json
+    methods = [
+        lambda x: yaml.safe_load(open(x)),
+        lambda x: json.load(open(x)),
+        lambda x: yaml.safe_load(x),
+        lambda x: json.load(x),
+    ]
+    for method in methods:
+        try:
+            return method(plan)
+        except Exception:
+            pass
+
+    raise ValueError(f"Invalid plan, could not parse {plan}")
 
 
 class MultioPlan(ContextDecorator):
@@ -21,11 +52,11 @@ class MultioPlan(ContextDecorator):
     """
 
     _prior_plan = None
-    _plan = None
+    _config = None
 
     _environ_var = "MULTIO_PLANS"
 
-    def __init__(self, plan: FILE | dict | Config):
+    def __init__(self, plan: FILE | dict | Client | Server):
         """
         Create the MultioPlan context manager
 
@@ -41,31 +72,22 @@ class MultioPlan(ContextDecorator):
         """
         self._environ_var = "MULTIO_PLANS"
 
+        if isinstance(plan, (os.PathLike, str)):
+            plan = parse_plan_from_str(plan)
+
         if isinstance(plan, dict):
-            self._plan = Config(**plan)
-        elif isinstance(plan, str):
-            methods = [
-                Config.from_yamlfile,
-                Config.from_yaml,
-                Config.model_validate,
-                Config.model_validate_json,
-            ]
-            for method in methods:
-                try:
-                    self._plan = method(plan)
-                    break
-                except Exception:
-                    pass
+            if 'transport' in plan:
+                plan = Server(**plan)
+            elif 'plans' in plan:
+                plan = Client(**plan)
+            else:
+                plan = Collection(**plan)
 
-            if self._plan is None:
-                raise ValueError(f"Invalid plan, could not parse {plan}")
-
-        elif isinstance(plan, Config):
-            self._plan = plan
+        self._config = plan
 
     def set_plan(self):
         self._prior_plan = os.environ.get(self._environ_var, None)
-        os.environ[self._environ_var] = self._plan.dump_json()
+        os.environ[self._environ_var] = self._config.dump_json()
 
     def revert_plan(self):
         if self._prior_plan is not None:
