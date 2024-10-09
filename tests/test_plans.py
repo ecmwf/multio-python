@@ -9,7 +9,7 @@ import pytest
 from pydantic import ValidationError
 
 import multio
-from multio.plans import Client, Plan, actions, Server
+from multio.plans import Client, Plan, Server, actions
 
 sample_plan = {
     "plans": [
@@ -50,7 +50,7 @@ def test_with_multio_server_add():
     config.add_plan(Plan(name="print", actions=[{"type": "print"}]))
 
     assert config.plans[0].actions[0].type == "print"
-    
+
     with multio.MultioPlan(config):
         with multio.Multio():
             pass
@@ -85,6 +85,7 @@ def test_conversion_to_client():
     test_config = test_plan.to_client()
     assert isinstance(test_config, Client)
     assert test_plan == test_config.plans[0]
+
 
 def test_conversion_to_server():
     test_plan = Plan(name="testing", actions=[{"type": "print"}])

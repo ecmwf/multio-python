@@ -210,6 +210,7 @@ CONFIGS = Annotated[
     Union[Annotated[Client, Tag("Client")], Annotated[Server, Tag("Server")]], Discriminator(discriminate_config)
 ]
 
+
 class Collection(MultioBaseModel):
     """
     Multio Collection of Configs

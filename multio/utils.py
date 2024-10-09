@@ -10,7 +10,7 @@ from __future__ import annotations
 import os
 from contextlib import ContextDecorator
 
-from .plans.plans import Client, Server, Collection, BaseConfig
+from .plans.plans import Client, Collection, Server
 
 FILE = os.PathLike
 
@@ -29,8 +29,10 @@ def parse_plan_from_str(plan: str) -> dict:
     dict
         Parsed plan
     """
-    import yaml
     import json
+
+    import yaml
+
     methods = [
         lambda x: yaml.safe_load(open(x)),
         lambda x: json.load(open(x)),
@@ -76,9 +78,9 @@ class MultioPlan(ContextDecorator):
             plan = parse_plan_from_str(plan)
 
         if isinstance(plan, dict):
-            if 'transport' in plan:
+            if "transport" in plan:
                 plan = Server(**plan)
-            elif 'plans' in plan:
+            elif "plans" in plan:
                 plan = Client(**plan)
             else:
                 plan = Collection(**plan)
