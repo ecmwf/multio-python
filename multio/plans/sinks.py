@@ -13,7 +13,8 @@ from pydantic import BaseModel, Field, FilePath, field_validator
 def open_yaml(v: str | dict) -> dict:
     if not isinstance(v, dict):
         import yaml
-        return yaml.safe_load(open(v, 'r'))
+
+        return yaml.safe_load(open(v, "r"))
     return v
 
 
