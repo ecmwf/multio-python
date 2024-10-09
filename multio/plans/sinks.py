@@ -7,7 +7,14 @@
 
 from typing import Literal, Union
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, FilePath, field_validator
+
+
+def open_yaml(v: str | dict) -> dict:
+    if not isinstance(v, dict):
+        import yaml
+        return yaml.safe_load(open(v, 'r'))
+    return v
 
 
 class Sinks(BaseModel):
@@ -39,7 +46,12 @@ class FDB(Sinks):
     """FDB Sink"""
 
     type: Literal["fdb5"] = "fdb5"
-    config: str = Field("", title="Config", description="Path to FDB configuration")
+    config: Union[FilePath, dict] = Field(default_factory={}, title="Config", description="Path to FDB configuration")
+
+    @field_validator("config")
+    @classmethod
+    def __load_yaml(cls, v):
+        return open_yaml(v)
 
 
 class File(Sinks):
