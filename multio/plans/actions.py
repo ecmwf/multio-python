@@ -50,8 +50,10 @@ class Aggregation(Action):
 
     type: Literal["aggregation"] = "aggregation"
 
+
 class Interpolate(Action):
     """Interpolate Action"""
+
     type: Literal["interpolate"] = "interpolate"
     options: dict[str, Any] = Field(default_factory=dict)
 
