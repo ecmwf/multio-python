@@ -8,12 +8,21 @@
 from __future__ import annotations
 
 import os
-from typing import Literal, Optional
+from typing import Any, Literal, Optional, Union
 
-from pydantic import BaseModel, Field, field_validator, validate_call
+from pydantic import (
+    BaseModel,
+    Discriminator,
+    Field,
+    Tag,
+    field_validator,
+    model_serializer,
+    model_validator,
+    validate_call,
+)
 from typing_extensions import Annotated
 
-from .actions import ACTIONS, Sink
+from .actions import ACTIONS, SingleField, Sink, Transport
 
 Name = Annotated[str, lambda x: x.replace(" ", "-")]
 Actions = Annotated[ACTIONS, Field(discriminator="type", title="Actions")]
@@ -36,7 +45,7 @@ class MultioBaseModel(BaseModel):
         """
         import yaml
 
-        return cls.model_validate(yaml.safe_load(yaml_str))
+        return cls.model_validate(yaml.safe_load(yaml_str), strict=True)
 
     @validate_call
     def write(self, file: os.PathLike, *, format: Literal["yaml", "json"] = "yaml") -> None:
@@ -82,7 +91,7 @@ class MultioBaseModel(BaseModel):
         """
         import yaml
 
-        return yaml.safe_dump(self.dump())
+        return yaml.safe_dump(self.dump(), sort_keys=False)
 
 
 class Plan(MultioBaseModel):
@@ -112,14 +121,14 @@ class Plan(MultioBaseModel):
 
     @field_validator("actions")
     @classmethod
-    def __check_has_sink(cls, v):
+    def __check_has_end(cls, v):
         """Force actions to contain at least one Sink
 
         As Multio requires a valid plan to contain at least one Sink,
         """
         if len(v) == 0:
             return [Sink()]
-        if not any([isinstance(action, Sink) for action in v]):
+        if not any([isinstance(action, (Transport, Sink, SingleField)) for action in v]):
             v.append(Sink())
         return v
 
@@ -131,18 +140,27 @@ class Plan(MultioBaseModel):
     def extend_actions(self, actions: list[Actions]):
         self.actions.extend(actions)
 
-    def to_config(self) -> Config:
-        return Config(plans=[self])
+    def to_client(self) -> CONFIGS:
+        return Client(plans=[self])
 
-    def __add__(self, other) -> Config:
+    def to_server(self) -> CONFIGS:
+        return Server(plans=[self])
+
+    def __add__(self, other) -> CONFIGS:
         if not isinstance(other, Plan):
             return NotImplemented
-        return Config(plans=[self, other])
+        return Client(plans=[self, other])
 
 
-class Config(MultioBaseModel):
+def discriminate_config(v: dict) -> Union[Client, Server]:
+    if "transport" in v:
+        return "Server"
+    return "Client"
+
+
+class BaseConfig(MultioBaseModel):
     """
-    Multio Config
+    Multio BaseConfig.
 
     Examples:
     ```python
@@ -156,9 +174,6 @@ class Config(MultioBaseModel):
     """
 
     plans: list[Plan] = Field(default_factory=lambda: [], title="Plans", description="List of plans to be executed")
-    transport: Optional[str] = Field(None, title="Transport", description="Transport protocol to use")
-    group: Optional[str] = None
-    count: Optional[int] = None
 
     @validate_call
     def add_plan(self, plan: Plan):
@@ -169,4 +184,57 @@ class Config(MultioBaseModel):
         self.plans.extend(plans)
 
 
-__all__ = ["Config", "Plan"]
+class Client(BaseConfig):
+    """Client Config"""
+
+    def to_server(self) -> CONFIGS:
+        return Server(plans=[self.plans])
+
+
+class Server(BaseConfig):
+    """
+    Server Config.
+
+    Adds transport protocol to the Config
+    """
+
+    transport: Optional[str] = Field(None, title="Transport", description="Transport protocol to use")
+    group: Optional[str] = None
+    count: Optional[int] = None
+
+
+CONFIGS = Annotated[
+    Union[Annotated[Client, Tag("Client")], Annotated[Server, Tag("Server")]], Discriminator(discriminate_config)
+]
+
+
+class Collection(MultioBaseModel):
+    """
+    Multio Collection of Configs
+    """
+
+    configs: dict[str, CONFIGS] = Field(default_factory=dict, title="Configs", description="Collection of Configs")
+
+    @validate_call
+    def add_config(self, key: str, config: CONFIGS):
+        self.configs[key] = config
+
+    @validate_call
+    def __get__(self, key: str) -> CONFIGS:
+        return self.configs[key]
+
+    @validate_call
+    def __set__(self, key: str, config: CONFIGS):
+        self.configs[key] = config
+
+    @model_validator(mode="before")
+    @classmethod
+    def __convert_to_pydantic(cls, data: Any) -> Any:
+        return {"configs": data}
+
+    @model_serializer
+    def __convert_to_multio(self) -> dict[str, Any]:
+        return {k: v.dump() for k, v in self.configs.items()}
+
+
+__all__ = ["Client", "Server", "Plan", "Collection"]
