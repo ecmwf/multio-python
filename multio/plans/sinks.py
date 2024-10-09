@@ -5,7 +5,6 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
-from pathlib import Path
 from typing import Literal, Union
 
 from pydantic import BaseModel, Field
@@ -27,7 +26,7 @@ class Trigger(Sinks):
     """Trigger Sink"""
 
     type: Literal["trigger"] = "trigger"
-    file: Path = Field(title="File", description="Path to trigger file")
+    file: str = Field(title="File", description="Path to trigger file")
     key: str
     host: str
     failOnRetry: bool = False
@@ -40,7 +39,7 @@ class FDB(Sinks):
     """FDB Sink"""
 
     type: Literal["fdb5"] = "fdb5"
-    config: Path = Field("", title="Config", description="Path to FDB configuration")
+    config: str = Field("", title="Config", description="Path to FDB configuration")
 
 
 class File(Sinks):
