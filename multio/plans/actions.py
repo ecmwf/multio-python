@@ -109,6 +109,12 @@ class Sink(Action):
         self.sinks.extend(sink)
 
 
-ACTIONS = Union[Select, Statistics, Transport, Aggregation, Interpolate, Print, Mask, Encode, Sink]
+class SingleField(Action):
+    """Single Field Sink"""
+
+    type: Literal["single-field-sink"] = "single-field-sink"
+
+
+ACTIONS = Union[Select, Statistics, Transport, Aggregation, Interpolate, Print, Mask, Encode, Sink, SingleField]
 
 __all__ = ["ACTIONS", "Action", "Select", "Statistics", "Transport", "Aggregation", "Print", "Mask", "Encode", "Sink"]
