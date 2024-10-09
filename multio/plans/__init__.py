@@ -13,5 +13,5 @@ Allows for Multio plans to be defined with pydantic
 """
 
 from .actions import Aggregation, Encode, Mask, Print, Select, Sink, Statistics, Transport
-from .plans import Collection, Server, Client, Plan
+from .plans import Client, Collection, Plan, Server
 from .sinks import FDB, File
