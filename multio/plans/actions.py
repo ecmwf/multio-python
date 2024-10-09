@@ -7,7 +7,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any, Literal, Union
 
 from pydantic import BaseModel, Field, ValidationInfo, field_validator, validate_call
@@ -51,6 +50,11 @@ class Aggregation(Action):
 
     type: Literal["aggregation"] = "aggregation"
 
+class Interpolate(Action):
+    """Interpolate Action"""
+    type: Literal["interpolate"] = "interpolate"
+    options: dict[str, Any] = Field(default_factory=dict)
+
 
 class Print(Action):
     """Print Action"""
@@ -75,7 +79,7 @@ class Encode(Action):
 
     type: Literal["encode"] = "encode"
     format: Literal["grib", "raw"]
-    template: Path | None = Field(None, validate_default=True)
+    template: str | None = Field(None, validate_default=True)
     grid_type: str | None = Field(None, serialization_alias="grid-type")
     atlas_named_grid: str | None = Field(None, serialization_alias="atlas-named-grid")
     additional_metadata: dict[str, Any] = Field(default_factory=dict, serialization_alias="additional-metadata")
@@ -103,6 +107,6 @@ class Sink(Action):
         self.sinks.extend(sink)
 
 
-ACTIONS = Union[Select, Statistics, Transport, Aggregation, Print, Mask, Encode, Sink]
+ACTIONS = Union[Select, Statistics, Transport, Aggregation, Interpolate, Print, Mask, Encode, Sink]
 
 __all__ = ["ACTIONS", "Action", "Select", "Statistics", "Transport", "Aggregation", "Print", "Mask", "Encode", "Sink"]
