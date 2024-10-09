@@ -152,7 +152,10 @@ class Plan(MultioBaseModel):
         return Client(plans=[self, other])
 
 
-def discriminate_config(v: dict) -> Union[Client, Server]:
+def discriminate_config(v: dict) -> Literal["Client", "Server"]:
+    """
+    Discriminate the config based on the presence of the transport key
+    """
     if "transport" in v:
         return "Server"
     return "Client"
@@ -207,7 +210,6 @@ CONFIGS = Annotated[
     Union[Annotated[Client, Tag("Client")], Annotated[Server, Tag("Server")]], Discriminator(discriminate_config)
 ]
 
-
 class Collection(MultioBaseModel):
     """
     Multio Collection of Configs
@@ -229,7 +231,7 @@ class Collection(MultioBaseModel):
 
     @model_validator(mode="before")
     @classmethod
-    def __convert_to_pydantic(cls, data: Any) -> Any:
+    def __convert_to_pydantic(cls, data: Any) -> dict:
         return {"configs": data}
 
     @model_serializer

@@ -9,35 +9,35 @@ from multio import MultioPlan, plans
 
 
 def test_from_config():
-    test_config = plans.Config(name="testing", plans=[plans.Plan(name="test")])
+    test_config = plans.Client(plans=[plans.Plan(name="test")])
     test_plan = MultioPlan(test_config)
     assert isinstance(test_plan, MultioPlan)
-    assert test_plan._plan == test_config
+    assert test_plan._config == test_config
 
 
 def test_from_json():
-    test_config = plans.Config(name="testing", plans=[plans.Plan(name="test")])
+    test_config = plans.Client(plans=[plans.Plan(name="test")])
     test_plan = MultioPlan(test_config.dump_json())
     assert isinstance(test_plan, MultioPlan)
-    assert test_plan._plan == test_config
+    assert test_plan._config == test_config
 
 
 def test_from_yaml_str():
-    test_config = plans.Config(name="testing", plans=[plans.Plan(name="test")])
+    test_config = plans.Client(plans=[plans.Plan(name="test")])
     test_plan = MultioPlan(test_config.dump_yaml())
     assert isinstance(test_plan, MultioPlan)
-    assert test_plan._plan == test_config
+    assert test_plan._config == test_config
 
 
 def test_from_dict():
-    test_config = plans.Config(name="testing", plans=[plans.Plan(name="test")])
+    test_config = plans.Client(plans=[plans.Plan(name="test")])
     test_plan = MultioPlan(test_config.model_dump())
     assert isinstance(test_plan, MultioPlan)
-    assert test_plan._plan == test_config
+    assert test_plan._config == test_config
 
 
 def test_from_file(tmp_path):
-    test_config = plans.Config(name="testing", plans=[plans.Plan(name="test")])
+    test_config = plans.Client(plans=[plans.Plan(name="test")])
 
     tmp_path.mkdir(exist_ok=True)
     tmp_path = tmp_path / "test.yaml"
@@ -45,4 +45,4 @@ def test_from_file(tmp_path):
 
     test_plan = MultioPlan(str(tmp_path))
     assert isinstance(test_plan, MultioPlan)
-    assert test_plan._plan == test_config
+    assert test_plan._config == test_config

@@ -9,7 +9,7 @@ import pytest
 from pydantic import ValidationError
 
 import multio
-from multio.plans import Config, Plan, actions
+from multio.plans import Client, Plan, actions, Server
 
 sample_plan = {
     "plans": [
@@ -28,26 +28,29 @@ sample_plan = {
 
 
 def test_sample_config():
-    Config(**sample_plan)
+    Client(**sample_plan)
 
 
 def test_with_multio_server_sample():
-    config = Config(**sample_plan)
+    config = Client(**sample_plan)
     with multio.MultioPlan(config):
         with multio.Multio():
             pass
 
 
 def test_with_multio_server_empty():
-    config = Config(name="empty")
+    config = Client()
     with multio.MultioPlan(config):
         with multio.Multio():
             pass
 
 
 def test_with_multio_server_add():
-    config = Config(name="empty")
+    config = Client()
     config.add_plan(Plan(name="print", actions=[{"type": "print"}]))
+
+    assert config.plans[0].actions[0].type == "print"
+    
     with multio.MultioPlan(config):
         with multio.Multio():
             pass
@@ -77,10 +80,16 @@ def test_extend_valid_action():
     assert isinstance(test_plan.actions[-1], actions.Print)
 
 
-def test_conversion_to_config():
+def test_conversion_to_client():
     test_plan = Plan(name="testing", actions=[{"type": "print"}])
-    test_config = test_plan.to_config()
-    assert isinstance(test_config, Config)
+    test_config = test_plan.to_client()
+    assert isinstance(test_config, Client)
+    assert test_plan == test_config.plans[0]
+
+def test_conversion_to_server():
+    test_plan = Plan(name="testing", actions=[{"type": "print"}])
+    test_config = test_plan.to_server()
+    assert isinstance(test_config, Server)
     assert test_plan == test_config.plans[0]
 
 
