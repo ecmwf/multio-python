@@ -50,7 +50,10 @@ def parse_plan_from_str(plan: str) -> dict:
 
 class MultioPlan(ContextDecorator):
     """
-    Context manager to set multio plans
+    Context manager to set multio plans.
+
+    Will record state of the MULTIO_PLANS environment variable
+    and revert it to its original state when exiting the context.
     """
 
     _prior_plan = None
