@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal, Union
+from typing import Any, Literal, Union, ClassVar
 
 from pydantic import BaseModel, Field, ValidationInfo, field_validator, validate_call
 from typing_extensions import Annotated
@@ -26,14 +26,14 @@ class Action(BaseModel):
 class Select(Action):
     """Select Action"""
 
-    type: Literal["select"] = "select"
+    type: ClassVar[Literal["select"]] = "select"
     match: list[dict[str, Any]]
 
 
 class Statistics(Action):
     """Statistics Action"""
 
-    type: Literal["statistics"] = "statistics"
+    type: ClassVar[Literal["statistics"]] = "statistics"
     operations: list[Literal["average", "minimum", "maximum", "accumulate", "instant"]]
     output_frequency: str = Field(serialization_alias="output-frequency", examples=["5h", "10d", "1w"])
 
@@ -48,20 +48,20 @@ class Transport(Action):
 class Aggregation(Action):
     """Aggregation Action"""
 
-    type: Literal["aggregation"] = "aggregation"
+    type: ClassVar[Literal["aggregation"]] = "aggregation"
 
 
 class Interpolate(Action):
     """Interpolate Action"""
 
-    type: Literal["interpolate"] = "interpolate"
+    type: ClassVar[Literal["interpolate"]] = "interpolate"
     options: dict[str, Any] = Field(default_factory=dict)
 
 
 class Print(Action):
     """Print Action"""
 
-    type: Literal["print"] = "print"
+    type: ClassVar[Literal["print"]] = "print"
     stream: Literal["cout", "info", "error"] = "info"
     prefix: str = ""
     only_fields: bool = Field(False, serialization_alias="only-fields")
@@ -70,7 +70,7 @@ class Print(Action):
 class Mask(Action):
     """Mask Action"""
 
-    type: Literal["mask"] = "mask"
+    type: ClassVar[Literal["mask"]] = "mask"
     apply_bitmap: bool = Field(True, serialization_alias="apply-bitmap")
     missing_value: float = Field(None, serialization_alias="missing-value")  # Need to set to max
     offset_value: float = Field(273.15, serialization_alias="offset-value")
@@ -79,7 +79,7 @@ class Mask(Action):
 class Encode(Action):
     """Encode Action"""
 
-    type: Literal["encode"] = "encode"
+    type: ClassVar[Literal["encode"]] = "encode"
     format: Literal["grib", "raw"]
     template: str | None = Field(None, validate_default=True)
     grid_type: str | None = Field(None, serialization_alias="grid-type")
@@ -97,7 +97,7 @@ class Encode(Action):
 class Sink(Action):
     """Sink Action"""
 
-    type: Literal["sink"] = "sink"
+    type: ClassVar[Literal["sink"]] = "sink"
     sinks: list[SinksType] = Field(default_factory=lambda: [])
 
     @validate_call
@@ -112,7 +112,7 @@ class Sink(Action):
 class SingleField(Action):
     """Single Field Sink"""
 
-    type: Literal["single-field-sink"] = "single-field-sink"
+    type: ClassVar[Literal["single-field-sink"]] = "single-field-sink"
 
 
 ACTIONS = Union[Select, Statistics, Transport, Aggregation, Interpolate, Print, Mask, Encode, Sink, SingleField]
