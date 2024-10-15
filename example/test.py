@@ -8,75 +8,75 @@ from multio import Multio, MultioPlan
 dir = os.path.dirname(__file__)
 
 MULTIO_PLAN = {
-        "plans": [
-            {
-                "name": "Write grib",
-                "actions": [
-                    {"type": "select", "match": [{"format": "grib"}]},
-                    {
-                        "type": "print",
-                        "stream": "cout",
-                        "prefix": "GRIB +++ ",
-                    },
-                    {
-                        "type": "sink",
-                        "sinks": [
-                            {
-                                "type": "file",
-                                "append": False,
-                                "per-server": False,
-                                "path": "{dir}/testOut.grib".format(dir=dir),
-                            }
-                        ],
-                    },
-                ],
-            },
-            {
-                "name": "Write float data",
-                "actions": [
-                    {"type": "select", "match": [{"precision": "single"}]},
-                    {
-                        "type": "print",
-                        "stream": "cout",
-                        "prefix": "FLOAT +++ ",
-                    },
-                    {
-                        "type": "sink",
-                        "sinks": [
-                            {
-                                "type": "file",
-                                "append": False,
-                                "per-server": False,
-                                "path": "{dir}/testFloat.bin".format(dir=dir),
-                            }
-                        ],
-                    },
-                ],
-            },
-            {
-                "name": "Write double data",
-                "actions": [
-                    {"type": "select", "match": [{"precision": "double"}]},
-                    {
-                        "type": "print",
-                        "stream": "cout",
-                        "prefix": "DOUBLE +++ ",
-                    },
-                    {
-                        "type": "sink",
-                        "sinks": [
-                            {
-                                "type": "file",
-                                "append": False,
-                                "per-server": False,
-                                "path": "{dir}/testDouble.bin".format(dir=dir),
-                            }
-                        ],
-                    },
-                ],
-            },
-        ]
-    }
+    "plans": [
+        {
+            "name": "Write grib",
+            "actions": [
+                {"type": "select", "match": [{"format": "grib"}]},
+                {
+                    "type": "print",
+                    "stream": "cout",
+                    "prefix": "GRIB +++ ",
+                },
+                {
+                    "type": "sink",
+                    "sinks": [
+                        {
+                            "type": "file",
+                            "append": False,
+                            "per-server": False,
+                            "path": "{dir}/testOut.grib".format(dir=dir),
+                        }
+                    ],
+                },
+            ],
+        },
+        {
+            "name": "Write float data",
+            "actions": [
+                {"type": "select", "match": [{"precision": "single"}]},
+                {
+                    "type": "print",
+                    "stream": "cout",
+                    "prefix": "FLOAT +++ ",
+                },
+                {
+                    "type": "sink",
+                    "sinks": [
+                        {
+                            "type": "file",
+                            "append": False,
+                            "per-server": False,
+                            "path": "{dir}/testFloat.bin".format(dir=dir),
+                        }
+                    ],
+                },
+            ],
+        },
+        {
+            "name": "Write double data",
+            "actions": [
+                {"type": "select", "match": [{"precision": "double"}]},
+                {
+                    "type": "print",
+                    "stream": "cout",
+                    "prefix": "DOUBLE +++ ",
+                },
+                {
+                    "type": "sink",
+                    "sinks": [
+                        {
+                            "type": "file",
+                            "append": False,
+                            "per-server": False,
+                            "path": "{dir}/testDouble.bin".format(dir=dir),
+                        }
+                    ],
+                },
+            ],
+        },
+    ]
+}
 
 # Not really neaded, just for MPI setups with server nodes
 conf_dict = {"allow_world": True, "parent_comm": 1, "client_comm": [2, 3], "server_comm": [4, 5]}

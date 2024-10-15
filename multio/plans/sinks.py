@@ -5,7 +5,7 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
-from typing import Literal, Union, ClassVar
+from typing import Literal, Union
 
 from pydantic import BaseModel, Field, FilePath, field_validator
 
@@ -27,13 +27,13 @@ class Sinks(BaseModel):
 class Debug(Sinks):
     """Debug Sink"""
 
-    type: ClassVar[Literal["debug-sink"]] = "debug-sink"
+    type: Literal["debug-sink"] = Field("debug-sink", init=False)
 
 
 class Trigger(Sinks):
     """Trigger Sink"""
 
-    type: Literal["trigger"] = "trigger"
+    type: Literal["trigger"] = Field("trigger", init=False)
     file: str = Field(title="File", description="Path to trigger file")
     key: str
     host: str
@@ -46,7 +46,7 @@ class Trigger(Sinks):
 class FDB(Sinks):
     """FDB Sink"""
 
-    type: ClassVar[Literal["fdb5"]] = "fdb5"
+    type: Literal["fdb5"] = Field("fdb5", init=False)
     config: Union[FilePath, dict] = Field(default_factory={}, title="Config", description="Path to FDB configuration")
 
     @field_validator("config")
@@ -58,7 +58,7 @@ class FDB(Sinks):
 class File(Sinks):
     """File Sink"""
 
-    type: ClassVar[Literal["file"]] = "file"
+    type: Literal["file"] = Field("file", init=False)
     append: bool
     per_server: bool = Field(False, serialization_alias="per-server")
     path: str
@@ -67,7 +67,7 @@ class File(Sinks):
 class Socket(Sinks):  # TO BE ADDED
     """Socket Sink"""
 
-    type: ClassVar[Literal["socket"]] = "socket"
+    type: Literal["socket"] = Field("socket", init=False)
 
 
 SINKS = Union[FDB, File, Socket, Debug]
