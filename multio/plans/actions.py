@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Literal, Union
+from typing import Any, Literal, Union
 
 from pydantic import BaseModel, Field, ValidationInfo, field_validator, validate_call
 from typing_extensions import Annotated
