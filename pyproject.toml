@@ -40,6 +40,8 @@ classifiers = [
 dynamic = [ "version" ]
 dependencies = [
   "cffi",
+  "numpy",
+  "findlibs",
 ]
 
 optional-dependencies.all = [ "multio-python" ]
