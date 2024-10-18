@@ -40,6 +40,8 @@ classifiers = [
 dynamic = [ "version" ]
 dependencies = [
   "cffi",
+  "pydantic",
+  "pyyaml",
   "numpy",
   "findlibs",
 ]

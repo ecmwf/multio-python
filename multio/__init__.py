@@ -1,6 +1,14 @@
-from .lib import MultioException  # noqa: F401
-from .metadata import Metadata  # noqa: F401
-from .multio import Multio  # noqa: F401
+# flake8: noqa: F401
+
+"""
+Multiopython
+"""
+
+from . import plans
+from .lib import MultioException
+from .metadata import Metadata
+from .multio import Multio
+from .utils import MultioPlan
 
 try:
     # NOTE: the `version.py` file must not be present in the git repository
