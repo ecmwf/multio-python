@@ -112,6 +112,25 @@ def test_write_field():
         os.remove(TEST_WRITE_FILE)
 
 
+def test_write_field_with_context():
+    with multio.MultioPlan(WRITE_FILE_PLAN):
+        if os.path.isfile(TEST_WRITE_FILE):
+            os.remove(TEST_WRITE_FILE)
+        with multio.Multio(**default_dict) as multio_object:
+            metadata = multio.Metadata(multio_object, None)
+            metadata["category"] = "path"
+            metadata["new"] = 1
+            metadata["new_float"] = 1.0
+            metadata["trigger"] = "step"
+            metadata["step"] = 1
+
+            multio_object.write_field(metadata, np.array([1.0, 2.0, 3.0, 4.0]))
+            multio_object.flush(metadata)
+            multio_object.notify(metadata)
+            assert os.path.isfile(TEST_WRITE_FILE)
+            os.remove(TEST_WRITE_FILE)
+
+
 def test_write_field_use_metadata_object():
     os.environ["MULTIO_PLANS"] = WRITE_FILE_PLAN
 
