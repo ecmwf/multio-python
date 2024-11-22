@@ -19,6 +19,7 @@ from pydantic import (
     model_serializer,
     model_validator,
     validate_call,
+    ConfigDict
 )
 from typing_extensions import Annotated
 
@@ -30,6 +31,9 @@ Actions = Annotated[ACTIONS, Field(discriminator="type", title="Actions")]
 
 class MultioBaseModel(BaseModel):
     """Multio Base Model"""
+    model_config = ConfigDict(
+        extra='forbid',
+    )
 
     @classmethod
     def from_yamlfile(cls, file: str):
