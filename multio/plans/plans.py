@@ -15,7 +15,6 @@ from pydantic import (
     Discriminator,
     Field,
     Tag,
-    field_validator,
     model_serializer,
     model_validator,
     validate_call,
@@ -103,11 +102,10 @@ class Plan(MultioBaseModel):
     Multio Plan
 
     Multio requires a valid plan to contain at least one Sink.
-    So if none provided by the user, an empty one will be auto appended.
 
     Examples:
     ```python
-        plan = Plan(name="Plan1")
+        plan = Plan(name="Plan1", action = [{"type": "print"}])
         plan.add_action({"type": "print"})
         plan.add_action({"type": "select", "match": [{"key": "value"}]})
         plan.add_action({"type": "sink", "sinks": [{"type": "file", "path": "output.txt"}]})
@@ -123,18 +121,6 @@ class Plan(MultioBaseModel):
         validate_default=True,
     )
 
-    @field_validator("actions")
-    @classmethod
-    def __check_has_end(cls, v):
-        """Force actions to contain at least one Sink
-
-        As Multio requires a valid plan to contain at least one Sink,
-        """
-        if len(v) == 0:
-            return [Sink()]
-        if not any([isinstance(action, (Transport, Sink, SingleField)) for action in v]):
-            v.append(Sink())
-        return v
 
     @validate_call
     def add_action(self, action: Actions):
@@ -143,6 +129,18 @@ class Plan(MultioBaseModel):
     @validate_call
     def extend_actions(self, actions: list[Actions]):
         self.actions.extend(actions)
+
+    def check_validity(self) -> bool:
+        """Check if the plan is valid"""
+        if not any([isinstance(action, (Transport, Sink, SingleField)) for action in self.actions]):
+            return False
+        return True
+    
+    def ensure_sink(self) -> 'Plan':
+        """Ensure that the plan has at least one Sink"""
+        if not any([isinstance(action, Sink) for action in self.actions]):
+            self.add_action(Sink())
+        return self
 
     def to_client(self) -> CONFIGS:
         return Client(plans=[self])
@@ -172,7 +170,7 @@ class BaseConfig(MultioBaseModel):
     Examples:
     ```python
         config = Config()
-        plan = Plan(name="Plan1")
+        plan = Plan(name="Plan1", plans = [{"type": "print"}])
         plan.add_action({"type": "print"})
         plan.add_action({"type": "select", "match": [{"key": "value"}]})
         plan.add_action({"type": "sink", "sinks": [{"type": "file", "path": "output.txt", "append": False}]})
@@ -180,7 +178,7 @@ class BaseConfig(MultioBaseModel):
     ```
     """
 
-    plans: list[Plan] = Field(default_factory=lambda: [], title="Plans", description="List of plans to be executed")
+    plans: list[Plan] = Field(title="Plans", description="List of plans to be executed")
 
     @validate_call
     def add_plan(self, plan: Plan):
