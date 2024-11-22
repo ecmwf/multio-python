@@ -10,16 +10,7 @@ from __future__ import annotations
 import os
 from typing import Any, Literal, Optional, Union
 
-from pydantic import (
-    BaseModel,
-    Discriminator,
-    Field,
-    Tag,
-    model_serializer,
-    model_validator,
-    validate_call,
-    ConfigDict
-)
+from pydantic import BaseModel, ConfigDict, Discriminator, Field, Tag, model_serializer, model_validator, validate_call
 from typing_extensions import Annotated
 
 from .actions import ACTIONS, SingleField, Sink, Transport
@@ -30,8 +21,9 @@ Actions = Annotated[ACTIONS, Field(discriminator="type", title="Actions")]
 
 class MultioBaseModel(BaseModel):
     """Multio Base Model"""
+
     model_config = ConfigDict(
-        extra='forbid',
+        extra="forbid",
     )
 
     @classmethod
@@ -121,7 +113,6 @@ class Plan(MultioBaseModel):
         validate_default=True,
     )
 
-
     @validate_call
     def add_action(self, action: Actions):
         self.actions.append(action)
@@ -135,8 +126,8 @@ class Plan(MultioBaseModel):
         if not any([isinstance(action, (Transport, Sink, SingleField)) for action in self.actions]):
             return False
         return True
-    
-    def ensure_sink(self) -> 'Plan':
+
+    def ensure_sink(self) -> "Plan":
         """Ensure that the plan has at least one Sink"""
         if not any([isinstance(action, Sink) for action in self.actions]):
             self.add_action(Sink())
