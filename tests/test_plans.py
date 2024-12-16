@@ -52,7 +52,6 @@ def test_with_multio_server_add():
     assert config.plans[0].actions[0].type == "print"
 
 
-
 def test_add_invalid_action():
     test_plan = Plan(name="testing")
     with pytest.raises(ValidationError):
