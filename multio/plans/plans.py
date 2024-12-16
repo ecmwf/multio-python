@@ -169,7 +169,7 @@ class BaseConfig(MultioBaseModel):
     ```
     """
 
-    plans: list[Plan] = Field(title="Plans", description="List of plans to be executed")
+    plans: list[Plan] = Field(title="Plans", description="List of plans to be executed", default_factory=list)
 
     @validate_call
     def add_plan(self, plan: Plan):
