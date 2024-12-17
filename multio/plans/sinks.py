@@ -5,12 +5,16 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
+"""
+Multio Sinks.
+"""
 from typing import Literal, Union
 
 from pydantic import BaseModel, Field, FilePath, field_validator
 
 
 def open_yaml(v: str | dict) -> dict:
+    """Open a YAML file or return the dictionary"""
     if not isinstance(v, dict):
         import yaml
 
@@ -19,7 +23,11 @@ def open_yaml(v: str | dict) -> dict:
 
 
 class Sinks(BaseModel):
-    """Base Sinks class"""
+    """Base Sinks class
+    
+    This class should not be instantiated directly.
+    Use one of the subclasses instead.
+    """
 
     type: str
 

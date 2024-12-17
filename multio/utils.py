@@ -91,10 +91,12 @@ class MultioPlan(ContextDecorator):
         self._config = plan
 
     def set_plan(self):
+        """Set plan in the environment"""
         self._prior_plan = os.environ.get(self._environ_var, None)
         os.environ[self._environ_var] = self._config.dump_json()
 
     def revert_plan(self):
+        """Revert plan to the original state"""
         if self._prior_plan is not None:
             os.environ[self._environ_var] = self._prior_plan
         elif self._environ_var in os.environ:

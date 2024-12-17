@@ -9,8 +9,24 @@
 """
 Multio Plans module
 
-Allows for Multio plans to be defined with pydantic
+Allows for Multio plans to be defined with Pydantic.
+
+Examples
+--------
+```python
+from multiopython.plans import actions, Client, Plan
+
+plan = Plan(name="Plan1", plans = [{"type": "print"}])
+plan.add_action({"type": "select", "match": [{"key": "value"}]})
+plan.add_action({"type": "sink", "sinks": [{"type": "file", "path": "output.txt", "append": False}]})
+
+client = Client(
+    plans = [plan],
+)
+```
 """
+
+from . import actions, sinks
 
 from .actions import Aggregation, Encode, Mask, Print, Select, Sink, Statistics, Transport
 from .plans import Client, Collection, Plan, Server

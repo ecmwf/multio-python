@@ -5,6 +5,12 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
+"""
+Multio Actions
+
+Defined as Pydantic models for type validation.
+"""
+
 from __future__ import annotations
 
 from typing import Any, Literal, Union
@@ -18,20 +24,31 @@ SinksType = Annotated[SINKS, Field(discriminator="type", title="Sinks")]
 
 
 class Action(BaseModel):
-    """Base Action class"""
+    """Base Action class.
 
-    type: str
+    Contains only a `type` field.
+
+    Should not be instantiated directly, use one of the subclasses instead.    
+    """
+
+    type: str = Field(str, description="Action type")
 
 
 class Select(Action):
-    """Select Action"""
+    """Select Action.
+
+    Select on some metadata within the data.
+    """
 
     type: Literal["select"] = Field("select", init=False)
-    match: list[dict[str, Any]]
+    match: list[dict[str, Any]] = Field(description="List of dictionaries to match against")
 
 
 class Statistics(Action):
-    """Statistics Action"""
+    """Statistics Action.
+    
+    Calculate statistics on the data.
+    """
 
     type: Literal["statistics"] = Field("statistics", init=False)
     operations: list[Literal["average", "minimum", "maximum", "accumulate", "instant"]]
@@ -62,8 +79,8 @@ class Print(Action):
     """Print Action"""
 
     type: Literal["print"] = Field("print", init=False)
-    stream: Literal["cout", "info", "error"] = "info"
-    prefix: str = ""
+    stream: Literal["cout", "info", "error"] = Field("info", description="Stream to print to")
+    prefix: str = Field("", description="Prefix to print")
     only_fields: bool = Field(False, serialization_alias="only-fields")
 
 
@@ -95,7 +112,10 @@ class Encode(Action):
 
 
 class Sink(Action):
-    """Sink Action"""
+    """Sink Action.
+
+    Contains a list of sinks to write to.    
+    """
 
     type: Literal["sink"] = Field("sink", init=False)
     sinks: list[SinksType] = Field(default_factory=lambda: [])
