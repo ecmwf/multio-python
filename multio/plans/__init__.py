@@ -27,7 +27,6 @@ client = Client(
 """
 
 from . import actions, sinks
-
 from .actions import Aggregation, Encode, Mask, Print, Select, Sink, Statistics, Transport
 from .plans import Client, Collection, Plan, Server
 from .sinks import FDB, File

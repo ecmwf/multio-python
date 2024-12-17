@@ -14,7 +14,7 @@ Holds a collection of actions for use with Multio.
 from __future__ import annotations
 
 import os
-from typing import Any, Literal, Optional, Union, TypeVar
+from typing import Any, Literal, Optional, TypeVar, Union
 
 from pydantic import BaseModel, ConfigDict, Discriminator, Field, Tag, model_serializer, model_validator, validate_call
 from typing_extensions import Annotated
@@ -28,7 +28,7 @@ T = TypeVar('T', bound='MultioBaseModel')
 
 class MultioBaseModel(BaseModel):
     """Multio Base Model
-    
+
     Should not be instantiated directly, use one of the subclasses instead.
     """
 
@@ -50,7 +50,7 @@ class MultioBaseModel(BaseModel):
         -------
         MultioBaseModel
             Loaded BaseModel
-        """        
+        """
         return cls.from_yaml(open(file))
 
     @classmethod
@@ -67,7 +67,7 @@ class MultioBaseModel(BaseModel):
         -------
         MultioBaseModel
             Loaded BaseModel
-        """        
+        """
         import yaml
 
         return cls.model_validate(yaml.safe_load(yaml_str), strict=True)
@@ -152,7 +152,7 @@ class Plan(MultioBaseModel):
         ----------
         action : Actions
             Action class, can be object or dictionary representing action
-        """        
+        """
         self.actions.append(action)
 
     @validate_call
@@ -164,7 +164,7 @@ class Plan(MultioBaseModel):
         ----------
         actions : list[Actions]
             List of actions to add
-        """        
+        """
         self.actions.extend(actions)
 
     def check_validity(self) -> bool:
@@ -175,7 +175,7 @@ class Plan(MultioBaseModel):
 
     def ensure_sink(self) -> "Plan":
         """Ensure that the plan has at least one Sink.
-        
+
         Multio requires a `Sink` in each plan.
         """
         if not any([isinstance(action, Sink) for action in self.actions]):
@@ -190,7 +190,7 @@ class Plan(MultioBaseModel):
         -------
         Client
             Client Config of this plan
-        """        
+        """
         return Client(plans=[self])
 
     def to_server(self) -> Server:
@@ -201,7 +201,7 @@ class Plan(MultioBaseModel):
         -------
         Server
             Server Config of this plan
-        """        
+        """
         return Server(plans=[self])
 
     def __add__(self, other) -> Client:
@@ -250,7 +250,7 @@ class BaseConfig(MultioBaseModel):
         ----------
         plan : Plan
             Plan to add, can be object or dictionary representing plan
-        """        
+        """
         self.plans.append(plan)
 
     @validate_call
@@ -269,7 +269,7 @@ class Client(BaseConfig):
         -------
         Server
             Server Config of these plans
-        """        
+        """
         return Server(plans=[self.plans])
 
 
@@ -310,7 +310,7 @@ class Collection(MultioBaseModel):
             Name of the config
         config : CONFIGS
             Config to add
-        """        
+        """
         self.configs[key] = config
 
     @validate_call
