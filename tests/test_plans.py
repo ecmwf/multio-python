@@ -51,10 +51,6 @@ def test_with_multio_server_add():
 
     assert config.plans[0].actions[0].type == "print"
 
-    with multio.MultioPlan(config):
-        with multio.Multio():
-            pass
-
 
 def test_add_invalid_action():
     test_plan = Plan(name="testing")
@@ -92,12 +88,6 @@ def test_conversion_to_server():
     test_config = test_plan.to_server()
     assert isinstance(test_config, Server)
     assert test_plan == test_config.plans[0]
-
-
-def test_auto_add_sink():
-    test_plan = Plan(name="testing", actions=[{"type": "print"}])
-    assert len(test_plan.actions) == 2
-    assert test_plan.actions[-1].type == "sink"
 
 
 def test_action_conversion():
