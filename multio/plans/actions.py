@@ -28,7 +28,7 @@ class Action(BaseModel):
 
     Contains only a `type` field.
 
-    Should not be instantiated directly, use one of the subclasses instead.    
+    Should not be instantiated directly, use one of the subclasses instead.
     """
 
     type: str = Field(str, description="Action type")
@@ -46,7 +46,7 @@ class Select(Action):
 
 class Statistics(Action):
     """Statistics Action.
-    
+
     Calculate statistics on the data.
     """
 
@@ -114,7 +114,7 @@ class Encode(Action):
 class Sink(Action):
     """Sink Action.
 
-    Contains a list of sinks to write to.    
+    Contains a list of sinks to write to.
     """
 
     type: Literal["sink"] = Field("sink", init=False)

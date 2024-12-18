@@ -24,7 +24,7 @@ def open_yaml(v: str | dict) -> dict:
 
 class Sinks(BaseModel):
     """Base Sinks class
-    
+
     This class should not be instantiated directly.
     Use one of the subclasses instead.
     """
