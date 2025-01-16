@@ -45,7 +45,7 @@ def test_initialisation():
 
 
 def test_multio_version():
-    assert multio.Multio(**default_dict).__version__() == "2.2.1"
+    assert multio.Multio(**default_dict).__version__() == "2.2.2"
 
 
 def test_initialisation_no_config():
